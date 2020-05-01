@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  service1:
+    build:
+      context: ./App_1/
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    env_file: .env
+    volumes:
+      - "./App_1:/usr/src/app1"
+      - "./App_1/node_modules/:/usr/src/app1/node_modules"
+
+  service2:
+    build:
+      context: ./App_2/
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    env_file: .env
+    volumes:
+      - "./App_2:/usr/src/app2"
+      - "./App_2/node_modules/:/usr/src/app2/node_modules"
+
+  nginx:
+    build: ./nginx
+    restart: on-failure
+    depends_on:
+      - service1
+      - service2
+    ports:
+      - "8000:8000"
+      - "8001:8001"
